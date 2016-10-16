@@ -53,6 +53,9 @@ static const uint8_t PIN_CS = A3;
 // Arduino NANO pin A6
 static const uint8_t PIN_EN = A6;
 
+static const uint8_t PIN_PROGRAM_SWITCH_1 = 7;
+static const uint8_t PIN_PROGRAM_SWITCH_2 = 8;
+
 // On board LED
 static const uint8_t PIN_STATUS = 13;
 
@@ -172,7 +175,12 @@ class Program {
 
 MotorState *motor1State;
 
-Program *currentProgram;
+// Note: Pins are initialized with pullup enabled.  Boolean algebra is backwards here. 
+// index [0][0] - both PROGRAM_SWITCH pins == HIGH 
+// index [0][1] - PROGRAM_SWITCH pins 1,2 == HIGH,LOW
+// index [1][0] - PROGRAM_SWITCH pins 1,2 == LOW,HIGH
+// index [1][0] - both PROGRAM_SWITCH pins == LOW
+Program *programs[2][2];
 
 void setup()
 {
@@ -186,26 +194,44 @@ void setup()
     // but the SparkFun example Arduino code does nothing with the pin that is mapped/connected to it.
     pinMode(PIN_EN, INPUT);
     pinMode(PIN_CS, INPUT);
+    
+    pinMode(PIN_PROGRAM_SWITCH_1, INPUT_PULLUP);
+    pinMode(PIN_PROGRAM_SWITCH_2, INPUT_PULLUP);
 
     motor1State = new MotorState();
-    currentProgram = new Program();
-    
+    for (int i=0; i<2; i++) {
+        for (int j=0; j<2; j++) {
+            programs[i][j] = new Program();
+        }
+    }
+
     // on full back and forth (4 seconds total)
-    currentProgram->addProgramStep(new ProgramStep(FORWARD, 1023, 2000));
-    currentProgram->addProgramStep(new ProgramStep(REVERSE, 1023, 2000));
+    programs[0][0]->addProgramStep(new ProgramStep(FORWARD, 1023, 2000));
+    programs[0][0]->addProgramStep(new ProgramStep(REVERSE, 1023, 2000));
     // on lower power back and forth (6 seconds total)
-    currentProgram->addProgramStep(new ProgramStep(FORWARD, 550, 3000));
-    currentProgram->addProgramStep(new ProgramStep(REVERSE, 550, 3000));
+    programs[0][0]->addProgramStep(new ProgramStep(FORWARD, 550, 3000));
+    programs[0][0]->addProgramStep(new ProgramStep(REVERSE, 550, 3000));
     // off for a few seconds
-    currentProgram->addProgramStep(new ProgramStep(BRAKEGND, 0, 2000));
+    programs[0][0]->addProgramStep(new ProgramStep(BRAKEGND, 0, 2000));
     // back and forth 3 times quick
-    currentProgram->addProgramStep(new ProgramStep(REVERSE, 550, 250));
-    currentProgram->addProgramStep(new ProgramStep(FORWARD, 550, 250));
-    currentProgram->addProgramStep(new ProgramStep(REVERSE, 550, 250));
-    currentProgram->addProgramStep(new ProgramStep(FORWARD, 550, 250));
-    currentProgram->addProgramStep(new ProgramStep(REVERSE, 550, 250));
-    currentProgram->addProgramStep(new ProgramStep(FORWARD, 550, 250));
-    currentProgram->addProgramStep(new ProgramStep(REVERSE, 550, 250));
+    programs[0][0]->addProgramStep(new ProgramStep(REVERSE, 550, 250));
+    programs[0][0]->addProgramStep(new ProgramStep(FORWARD, 550, 250));
+    programs[0][0]->addProgramStep(new ProgramStep(REVERSE, 550, 250));
+    programs[0][0]->addProgramStep(new ProgramStep(FORWARD, 550, 250));
+    programs[0][0]->addProgramStep(new ProgramStep(REVERSE, 550, 250));
+    programs[0][0]->addProgramStep(new ProgramStep(FORWARD, 550, 250));
+    programs[0][0]->addProgramStep(new ProgramStep(REVERSE, 550, 250));
+    
+    programs[0][1]->addProgramStep(new ProgramStep(FORWARD, 800, 500));
+    programs[0][1]->addProgramStep(new ProgramStep(BRAKEGND, 0, 3000));
+
+    programs[1][0]->addProgramStep(new ProgramStep(BRAKEGND, 0, 1000));
+    programs[1][0]->addProgramStep(new ProgramStep(REVERSE, 800, 200));
+    programs[1][0]->addProgramStep(new ProgramStep(BRAKEGND, 0, 1000));
+    programs[1][0]->addProgramStep(new ProgramStep(FORWARD, 800, 200));
+
+    programs[1][1]->addProgramStep(new ProgramStep(BRAKEGND, 0, 10000));
+    programs[1][1]->addProgramStep(new ProgramStep(FORWARD, 800, 1000));
     
     // Initialize stopped/braked
     stopMotor();
@@ -217,7 +243,7 @@ void loop() {
         // fast-blink the on-board LED
         digitalWrite(PIN_STATUS, HIGH);
         delay(50);
-        digitalWrite(PIN_STATUS, HIGH);
+        digitalWrite(PIN_STATUS, LOW);
         delay(50);
     } else {
         // Check every loop to be sure the motor isn't stalled
@@ -229,7 +255,11 @@ void loop() {
             // continue the motor-sequence program
             digitalWrite(PIN_STATUS, HIGH);
             delay(UPDATE_INTERVAL);
-            currentProgram->updateProgramState(motor1State);
+            // Note: If these are though of as "bits", the boolean algebra is reversed
+            // because the pins are initialized with the pullup enabled so "on" == LOW
+            uint8_t programSwitch1 = (digitalRead(PIN_PROGRAM_SWITCH_1)) ? 0 : 1;
+            uint8_t programSwitch2 = (digitalRead(PIN_PROGRAM_SWITCH_2)) ? 0 : 1;
+            programs[programSwitch1][programSwitch2]->updateProgramState(motor1State);
             motor1State->updateMotorState();
         }
     }
