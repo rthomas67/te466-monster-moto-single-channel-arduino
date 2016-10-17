@@ -29,3 +29,8 @@ like it might attract the attention of a lethargic, cold, winter
 fish.
 
 
+# References
+* Monster Moto Shield Product Info - https://www.sparkfun.com/products/10182
+** Another Seller - http://www.robotshop.com/en/monster-motor-controller-shield-arduino.html
+* Arduino Simulators - https://www.smashingrobotics.com/arduino-simulators-lineup-start-developing-without-real-board/
+* The VNH2SP20 Chip Info - https://www.pololu.com/product/537 (Has a link to the data sheet on the "Resources" tab, and refs to carrier boards made by Pololu)
