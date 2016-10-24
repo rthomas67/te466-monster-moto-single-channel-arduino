@@ -206,32 +206,32 @@ void setup()
     }
 
     // on full back and forth (4 seconds total)
-    programs[0][0]->addProgramStep(new ProgramStep(FORWARD, 1023, 2000));
-    programs[0][0]->addProgramStep(new ProgramStep(REVERSE, 1023, 2000));
+    programs[0][0]->addProgramStep(new ProgramStep(FORWARD, 255, 2000));
+    programs[0][0]->addProgramStep(new ProgramStep(REVERSE, 255, 2000));
     // on lower power back and forth (6 seconds total)
-    programs[0][0]->addProgramStep(new ProgramStep(FORWARD, 550, 3000));
-    programs[0][0]->addProgramStep(new ProgramStep(REVERSE, 550, 3000));
+    programs[0][0]->addProgramStep(new ProgramStep(FORWARD, 127, 3000));
+    programs[0][0]->addProgramStep(new ProgramStep(REVERSE, 127, 3000));
     // off for a few seconds
     programs[0][0]->addProgramStep(new ProgramStep(BRAKEGND, 0, 2000));
     // back and forth 3 times quick
-    programs[0][0]->addProgramStep(new ProgramStep(REVERSE, 550, 250));
-    programs[0][0]->addProgramStep(new ProgramStep(FORWARD, 550, 250));
-    programs[0][0]->addProgramStep(new ProgramStep(REVERSE, 550, 250));
-    programs[0][0]->addProgramStep(new ProgramStep(FORWARD, 550, 250));
-    programs[0][0]->addProgramStep(new ProgramStep(REVERSE, 550, 250));
-    programs[0][0]->addProgramStep(new ProgramStep(FORWARD, 550, 250));
-    programs[0][0]->addProgramStep(new ProgramStep(REVERSE, 550, 250));
+    programs[0][0]->addProgramStep(new ProgramStep(REVERSE, 127, 250));
+    programs[0][0]->addProgramStep(new ProgramStep(FORWARD, 127, 250));
+    programs[0][0]->addProgramStep(new ProgramStep(REVERSE, 127, 250));
+    programs[0][0]->addProgramStep(new ProgramStep(FORWARD, 127, 250));
+    programs[0][0]->addProgramStep(new ProgramStep(REVERSE, 127, 250));
+    programs[0][0]->addProgramStep(new ProgramStep(FORWARD, 127, 250));
+    programs[0][0]->addProgramStep(new ProgramStep(REVERSE, 127, 250));
     
-    programs[0][1]->addProgramStep(new ProgramStep(FORWARD, 800, 500));
+    programs[0][1]->addProgramStep(new ProgramStep(FORWARD, 200, 500));
     programs[0][1]->addProgramStep(new ProgramStep(BRAKEGND, 0, 3000));
 
     programs[1][0]->addProgramStep(new ProgramStep(BRAKEGND, 0, 1000));
-    programs[1][0]->addProgramStep(new ProgramStep(REVERSE, 800, 200));
+    programs[1][0]->addProgramStep(new ProgramStep(REVERSE, 200, 200));
     programs[1][0]->addProgramStep(new ProgramStep(BRAKEGND, 0, 1000));
-    programs[1][0]->addProgramStep(new ProgramStep(FORWARD, 800, 200));
+    programs[1][0]->addProgramStep(new ProgramStep(FORWARD, 200, 200));
 
     programs[1][1]->addProgramStep(new ProgramStep(BRAKEGND, 0, 10000));
-    programs[1][1]->addProgramStep(new ProgramStep(FORWARD, 800, 1000));
+    programs[1][1]->addProgramStep(new ProgramStep(FORWARD, 200, 1000));
     
     // Initialize stopped/braked
     stopMotor();
