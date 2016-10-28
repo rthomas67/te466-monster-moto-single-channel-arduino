@@ -27,3 +27,10 @@
 *.exe
 *.out
 *.app
+
+# Sloeber Eclipse/Arduino
+Release
+.cproject
+.project
+.settings
+.ino.cpp
