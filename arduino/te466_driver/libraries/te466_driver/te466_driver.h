@@ -63,7 +63,7 @@
 
 class MotorState {
 
-	int lastCurrentSensePinValue;
+	int lastCurrentSensePinValue = 0;
 
 	uint8_t currentSensePin;
 

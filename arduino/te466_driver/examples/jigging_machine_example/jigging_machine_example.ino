@@ -87,7 +87,7 @@ void setup()
     pinMode(PIN_PARK_TRIGGER, INPUT_PULLUP);
     pinMode(PIN_PARK_FEEDBACK, INPUT_PULLUP);
 
-    motor1State = new MotorState(PIN_INA, PIN_INB, PIN_PWM);
+    motor1State = new MotorState(PIN_INA, PIN_INB, PIN_PWM, PIN_CS);
     for (int i=0; i<2; i++) {
         for (int j=0; j<2; j++) {
             programs[i][j] = new Program();

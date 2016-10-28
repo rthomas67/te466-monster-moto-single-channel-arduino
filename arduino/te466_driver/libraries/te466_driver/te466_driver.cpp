@@ -1,9 +1,10 @@
 #include "te466_driver.h"
 
-MotorState::MotorState(uint8_t pinInA, uint8_t pinInB, uint8_t pinPWM) {
+MotorState::MotorState(uint8_t pinInA, uint8_t pinInB, uint8_t pinPWM, uint8_t currentSensePin) {
     this->pinInA = pinInA;
     this->pinInB = pinInB;
     this->pinPWM = pinPWM;
+    this->currentSensePin = currentSensePin;
 }
     
 void MotorState::setDesiredState(uint8_t ina, uint8_t inb, uint8_t pwm) {
@@ -35,7 +36,7 @@ void MotorState::stopMotor() {
 boolean MotorState::checkOvercurrent(int overcurrentThreshhold) {
 	lastCurrentSensePinValue = analogRead(currentSensePin);
 	if (lastCurrentSensePinValue > overcurrentThreshhold) {
-        motor1State->stopMotor();
+        stopMotor();
         overcurrentFaultDetected = true;
         return true;
 	} else {
