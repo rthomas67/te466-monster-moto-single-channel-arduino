@@ -68,6 +68,11 @@ MotorState *motor1State;
 // index [1][0] - both PROGRAM_SWITCH pins == LOW
 Program *programs[2][2];
 
+int buffer[6];
+
+unsigned long lastPlotTime = 0;
+unsigned long plotInterval = 250;
+
 void setup()
 {
 
@@ -215,6 +220,24 @@ void setup()
     }
 }
 
+
+void plot(int data1, int data2, int data3, int data4) {
+	int pktSize;
+
+	buffer[0] = 0xCDAB;             //SimPlot packet header. Indicates start of data packet
+	buffer[1] = 4*sizeof(int);      //Size of data in bytes. Does not include the header and size fields
+	buffer[2] = data1;
+	buffer[3] = data2;
+	buffer[4] = data3;
+	buffer[5] = data4;
+
+	pktSize = 2 + 2 + (4*sizeof(int)); //Header bytes + size field bytes + data
+
+	//IMPORTANT: Change to serial port that is connected to PC
+	Serial.write((uint8_t * )buffer, pktSize);
+}
+
+
 void loop() {
     if (motor1State->isOvercurrentFaultDetected()) {
         // fast-blink the on-board LED
@@ -240,6 +263,15 @@ void loop() {
             programs[programSwitch1][programSwitch2]->updateProgramState(motor1State);
             motor1State->updateMotorState();
         }
+
+//    	unsigned long now = millis();
+//    	if (now > lastPlotTime + plotInterval) {
+//    		lastPlotTime = now;
+//    		plot(motor1State->getCurrentStateIna(),
+//    				motor1State->getCurrentStateIna(),
+//					motor1State->getCurrentStateIna(),
+//					motor1State->getLastCurrentSensePinValue());
+//    	}
     }
 
 }
